@@ -1,28 +1,229 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>{{title}}</h1>
+    <ul class="todos">
+      <li v-for="(toDo, index) in toDos"
+          :id="toDo.id"
+          :key="toDo.id"
+          :class="{'checked' : toDo.done}"
+      >
+        <label>{{index+1}}.{{toDo.value}}</label>
+        <time>{{toDo.created | date}}</time>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      title: 'To-Do-List',
+      toDos: [
+        { value: '阅读一本关于前端开发的书籍', done: false, created: Date.now() },
+        { value: '补充示例代码', done: true, created: Date.now() + 300000 },
+        { value: '写心得', done: false, created: Date.now() - 300000 }
+      ]
+    }
+  },
+  filters: {
+    date (val) {
+      return moment(val).calendar()
+    }
   }
 }
 </script>
 
-<style lang="less">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="less" scoped>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.4em;
+    background: #f5f5f5;
+    color: #4d4d4d;
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    font-weight: 100;
+    min-width: 230px;
+    max-width: 550px;
+
+  }
+
+  h1 {
+    width: 100%;
+    font-size: 80px;
+    font-weight: 100;
+    text-align: center;
+    color: rgba(175, 47, 47, 0.15);
+    -webkit-text-rendering: optimizeLegibility;
+    -moz-text-rendering: optimizeLegibility;
+    text-rendering: optimizeLegibility;
+  }
+
+  button,
+  input {
+    outline: none;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      max-width: auto;
+    }
+  }
+
+  @input_color: #e6e6e6;
+  @input_font_weight: 300;
+  @checkbox_img: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -18 100 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#ededed" stroke-width="3"/></svg>';
+  @checkbox_checked_img: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -18 100 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#bddad5" stroke-width="3"/><path fill="#5dc2af" d="M72 25L42 71 27 56l-4 4 20 20 34-52z"/></svg>';
+
+  .todos {
+    margin: 0;
+    list-style-type: none;
+    padding: 0 20px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 10px 30px #ccc;
+    position: relative;
+    transiton: .3s;
+
+    & input::-webkit-input-placeholder {
+      font-style: italic;
+      font-weight: @input_font_weight;
+      color: @input_color;
+    }
+
+    & input::-moz-placeholder {
+      font-style: italic;
+      font-weight: @input_font_weight;
+      color: @input_color;
+    }
+
+    & input::-moz-placeholder {
+      font-style: italic;
+      font-weight: @input_font_weight;
+      color: @input_color;
+    }
+
+    & input::-ms-input-placeholder {
+      font-style: italic;
+      font-weight: @input_font_weight;
+      color: @input_color;
+    }
+
+    & > li {
+      cursor: pointer;
+      font-size: 24px;
+      line-height: 36px;
+      padding: 12px 0;
+      border-bottom: 1px solid #ededed;
+      position: relative;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:first-child > input {
+        font-size: 24px;
+        padding: 10px;
+        border: none;
+        width: 100%;
+        background: transparent;
+      }
+
+      & > input[type=checkbox] {
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        width: 40px;
+        height: auto;
+        position: absolute;
+        top: 10px;
+        bottom: 0;
+        margin: auto 0;
+        border: none;
+        -webkit-appearance: none;
+        appearance: none;
+
+        &:after {
+          content: url(@checkbox_img);
+        }
+      }
+
+      & > time {
+        position: absolute;
+        right: 60px;
+        top: 15px;
+        font-size: 9pt;
+      }
+
+      & > label {
+        display: block;
+        vertical-align: middle;
+        padding-left: 50px;
+        letter-spacing: 2;
+      }
+
+      & > button {
+        position: absolute;
+        right: 5px;
+        top: 15px;
+        height: 30px;
+        width: 30px;
+        border: none;
+        background: none;
+        display: none;
+
+        &:after, &:before {
+          content: "";
+          position: absolute;
+          top: 15px;
+          left: 0;
+          transform: rotateZ(45deg);
+          height: 1px;
+          width: 30px;
+          background: #cc9a9a;
+        }
+
+        &:before {
+          transform: rotateZ(-45deg);
+        }
+
+      }
+
+      &.checked {
+        & > input[type=checkbox] {
+          &:after {
+            content: url(@checkbox_checked_img);
+          }
+        }
+
+        &.checked > label {
+          color: #d9d9d9;
+          text-decoration: line-through;
+        }
+      }
+
+      &:hover {
+        & > button {
+          display: block;
+        }
+      }
+    }
+  }
 </style>
